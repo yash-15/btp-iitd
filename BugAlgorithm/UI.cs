@@ -11,14 +11,19 @@ public partial class Form1 : System.Windows.Forms.Form
     private IContainer components;
 
     private System.Windows.Forms.PictureBox clickFrame;
-    private System.Windows.Forms.PictureBox picBall;
     private System.Windows.Forms.Timer timer1;
     private System.Windows.Forms.TextBox txtX;
     private System.Windows.Forms.TextBox txtY;
+    private System.Windows.Forms.TextBox comment;
     private System.Windows.Forms.Button newObjBtn;
     private List<Point[]> obstaclesUI;
-    private System.Drawing.SolidBrush brush;
-    
+    private System.Drawing.SolidBrush obsBrush;
+    private System.Drawing.SolidBrush bugBrush;
+    private System.Drawing.SolidBrush endBrush;
+    private int clickMode;
+    private int bugRadius = 5;
+    private enum clickType {NONE,OBS,INITIAL,FINAL};
+
     public Form1()
     {
         InitializeAlgorithm();
@@ -28,16 +33,20 @@ public partial class Form1 : System.Windows.Forms.Form
 
     private void InitializeComponent()
     {
-            this.brush = new SolidBrush(Color.Red);
+            this.obsBrush = new SolidBrush(Color.FromArgb(76,182,235));
+            this.bugBrush = new SolidBrush(Color.Red);
+            this.endBrush = new SolidBrush(Color.Green); 
+
             this.components = new System.ComponentModel.Container();
             this.clickFrame = new System.Windows.Forms.PictureBox();
-            this.picBall = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.txtX = new System.Windows.Forms.TextBox();
             this.txtY = new System.Windows.Forms.TextBox();
+            this.comment = new System.Windows.Forms.TextBox();
             this.newObjBtn = new System.Windows.Forms.Button();
+            this.clickMode = (int)clickType.NONE;
+
             ((System.ComponentModel.ISupportInitialize)(this.clickFrame)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBall)).BeginInit();
             this.SuspendLayout();
             // 
             // clickFrame
@@ -48,16 +57,6 @@ public partial class Form1 : System.Windows.Forms.Form
             this.clickFrame.TabIndex = 0;
             this.clickFrame.TabStop = false;
             this.clickFrame.Click += new System.EventHandler(this.clickFrame_Click);
-            // 
-            // picBall
-            // 
-            this.picBall.ImageLocation = "Resources/bug.jpg";
-            this.picBall.Location = new System.Drawing.Point(251, 100);
-            this.picBall.Name = "picBall";
-            this.picBall.Size = new System.Drawing.Size(32, 32);
-            this.picBall.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picBall.TabIndex = 1;
-            this.picBall.TabStop = false;
             // 
             // timer1
             // 
@@ -70,7 +69,6 @@ public partial class Form1 : System.Windows.Forms.Form
             this.txtX.Name = "txtX";
             this.txtX.Size = new System.Drawing.Size(100, 20);
             this.txtX.TabIndex = 2;
-            this.txtX.Text = "24";
             // 
             // txtY
             // 
@@ -78,7 +76,13 @@ public partial class Form1 : System.Windows.Forms.Form
             this.txtY.Name = "txtY";
             this.txtY.Size = new System.Drawing.Size(100, 20);
             this.txtY.TabIndex = 3;
-            this.txtY.Text = "136";
+            // 
+            // comment
+            // 
+            this.comment.Location = new System.Drawing.Point(25, 200);
+            this.comment.Name = "comment";
+            this.comment.Size = new System.Drawing.Size(100, 20);
+            this.comment.TabIndex = 4;
             // 
             // newObjBtn
             // 
@@ -92,17 +96,17 @@ public partial class Form1 : System.Windows.Forms.Form
             // Form1
             // 
             this.BackColor = System.Drawing.Color.White;
+            this.StartPosition = FormStartPosition.WindowsDefaultLocation;
             this.ClientSize = new System.Drawing.Size(800, 600);
             this.clickFrame.Paint+=new PaintEventHandler(this.drawObstacles);
             this.Controls.Add(this.clickFrame);
-            this.Controls.Add(this.picBall);
             this.Controls.Add(this.txtX);
             this.Controls.Add(this.txtY);
+            this.Controls.Add(this.comment);
             this.Controls.Add(this.newObjBtn);
             this.Name = "Form1";
-            this.Text = "Crasher";
+            this.Text = "Path planning: Bug Algorithm";
             ((System.ComponentModel.ISupportInitialize)(this.clickFrame)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBall)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -118,21 +122,20 @@ public partial class Form1 : System.Windows.Forms.Form
     }
     private int Y(int y)
     {
-        return  300-y;
+        return  450-y;
     }
     
     private void drawObstacles(object sender, PaintEventArgs e)
     {
         foreach(Point[] obstacle in obstaclesUI)
-        {
-            e.Graphics.FillPolygon(brush, obstacle);
-        }
-        
+            e.Graphics.FillPolygon(obsBrush, obstacle);
+        e.Graphics.FillEllipse(bugBrush, X(pos.X - bugRadius), Y(pos.Y - bugRadius), 2 * bugRadius, 2 * bugRadius);
+        e.Graphics.FillEllipse(endBrush, X(end.X - bugRadius), Y(end.Y - bugRadius), 2 * bugRadius, 2 * bugRadius);
     }
 
     private void newObj_Click(object sender, EventArgs e)
     {
-        isDraw = true;
+        this.clickMode = (int)clickType.OBS;
     }
 
     private void clickFrame_Click(object sender, EventArgs e)
