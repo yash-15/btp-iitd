@@ -16,6 +16,7 @@ public partial class Form1 : System.Windows.Forms.Form
     private System.Windows.Forms.TextBox txtY;
     private System.Windows.Forms.TextBox comment;
     private System.Windows.Forms.Button newObjBtn;
+    private System.Windows.Forms.Button pauseBtn;
     private List<Point[]> obstaclesUI;
     private System.Drawing.SolidBrush obsBrush;
     private System.Drawing.SolidBrush bugBrush;
@@ -44,6 +45,7 @@ public partial class Form1 : System.Windows.Forms.Form
             this.txtY = new System.Windows.Forms.TextBox();
             this.comment = new System.Windows.Forms.TextBox();
             this.newObjBtn = new System.Windows.Forms.Button();
+            this.pauseBtn = new System.Windows.Forms.Button();
             this.clickMode = (int)clickType.NONE;
 
             ((System.ComponentModel.ISupportInitialize)(this.clickFrame)).BeginInit();
@@ -93,6 +95,15 @@ public partial class Form1 : System.Windows.Forms.Form
             this.newObjBtn.Text = "Add obstacle";
             this.newObjBtn.Click += new System.EventHandler(this.newObj_Click);
             // 
+            // pauseBtn
+            // 
+            this.pauseBtn.Location = new System.Drawing.Point(25, 250);
+            this.pauseBtn.Name = "newObjBtn";
+            this.pauseBtn.Size = new System.Drawing.Size(100, 23);
+            this.pauseBtn.TabIndex = 0;
+            this.pauseBtn.Text = "Pause";
+            this.pauseBtn.Click += new System.EventHandler(this.pause_Click);
+            // 
             // Form1
             // 
             this.BackColor = System.Drawing.Color.White;
@@ -104,6 +115,7 @@ public partial class Form1 : System.Windows.Forms.Form
             this.Controls.Add(this.txtY);
             this.Controls.Add(this.comment);
             this.Controls.Add(this.newObjBtn);
+            this.Controls.Add(this.pauseBtn);
             this.Name = "Form1";
             this.Text = "Path planning: Bug Algorithm";
             ((System.ComponentModel.ISupportInitialize)(this.clickFrame)).EndInit();
@@ -141,5 +153,19 @@ public partial class Form1 : System.Windows.Forms.Form
     private void clickFrame_Click(object sender, EventArgs e)
     {
         // https://msdn.microsoft.com/en-us/library/system.windows.forms.control.mouseclick.aspx
+    }
+
+    private void pause_Click(object sender, EventArgs e)
+    {
+        if (timer1.Enabled)
+        {
+            timer1.Stop();
+            pauseBtn.Text = "Resume";
+        }
+        else
+        {
+            timer1.Enabled = true;
+            pauseBtn.Text = "Pause";
+        }
     }
 }

@@ -30,37 +30,7 @@ public partial class Form1 : System.Windows.Forms.Form
         checkpoint = start;
     }
 
-    private void readFromFile()
-    {
-        System.IO.StreamReader scan = new System.IO.StreamReader("Resources/obstacles.txt");
-        string line=scan.ReadLine();
-        string[] str;
-        Point[] poly;
-        int obstacleCount = Convert.ToInt32(line),pts;
-        for (int i = 0; i < obstacleCount; i++)
-        {
-            line = scan.ReadLine();
-            pts = Convert.ToInt32(line);
-            poly = new Point[pts+1];
-
-            for (int j = 0; j < pts; j++)
-            {
-                str = scan.ReadLine().Split();
-                poly[j] = (new Point(Convert.ToInt32(str[0]), Convert.ToInt32(str[1])));
-            }
-            poly[pts] = poly[0];
-            obstacles.Add(poly);
-
-            for (int j = 0; j <= pts; j++)
-            {
-                poly[j].X = X(poly[j].X);
-                poly[j].Y = Y(poly[j].Y);
-            }
-            obstaclesUI.Add(poly);
-        }
-        scan.Close();
-    }
-
+    
     private void timer1_Tick(object sender, System.EventArgs e)
     {
         if (moveMode == (int)moveType.Free)
@@ -111,6 +81,26 @@ public partial class Form1 : System.Windows.Forms.Form
         this.clickFrame.Invalidate(true);
     }
 
+    struct Line 
+    {
+        public float a, b, c;
+        public Line(float x, float y, float z)
+        {
+            a = x;
+            b = y;
+            c = z;
+        }
+    };
+
+    private Line twoPointLine(PointF a, PointF b)
+    {
+        Line l;
+        l.a = a.Y - b.Y;
+        l.b = b.X - a.X;
+        l.c=  a.X*b.Y-b.X*a.Y;
+        return l;
+    }
+
     private bool isCollinear(PointF a, PointF b, PointF c)
     {
         return false;
@@ -148,6 +138,38 @@ public partial class Form1 : System.Windows.Forms.Form
         double dist = Math.Sqrt(a.X * a.X + a.Y * a.Y);
         return (dist < (double)bugRadius);
     }
+
+    private void readFromFile()
+    {
+        System.IO.StreamReader scan = new System.IO.StreamReader("Resources/obstacles.txt");
+        string line = scan.ReadLine();
+        string[] str;
+        Point[] poly;
+        int obstacleCount = Convert.ToInt32(line), pts;
+        for (int i = 0; i < obstacleCount; i++)
+        {
+            line = scan.ReadLine();
+            pts = Convert.ToInt32(line);
+            poly = new Point[pts + 1];
+
+            for (int j = 0; j < pts; j++)
+            {
+                str = scan.ReadLine().Split();
+                poly[j] = (new Point(Convert.ToInt32(str[0]), Convert.ToInt32(str[1])));
+            }
+            poly[pts] = poly[0];
+            obstacles.Add(poly);
+
+            for (int j = 0; j <= pts; j++)
+            {
+                poly[j].X = X(poly[j].X);
+                poly[j].Y = Y(poly[j].Y);
+            }
+            obstaclesUI.Add(poly);
+        }
+        scan.Close();
+    }
+
     //private void newObj_Click(object sender, EventArgs e)
     //{
     //    isDraw = true;
