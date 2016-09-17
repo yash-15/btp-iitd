@@ -6,11 +6,14 @@ Y:\BTP\Application1\Application1\obj\x86\Debug\Application1.exe
 Y:\BTP\Application1\Application1\obj\x86\Debug\Application1.pdb
 Y:\BTP\Application1 - Copy\Application1\obj\x86\Debug\Application1.exe
 Y:\BTP\Application1 - Copy\Application1\obj\x86\Debug\Application1.pdb
-Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.exe
-Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.pdb
-Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.Properties.Resources.resources
-Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.csproj.GenerateResource.Cache
 Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\bin\Debug\Application1.exe
 Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\bin\Debug\Application1.pdb
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.Properties.Resources.resources
 Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Form1.resources
-Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.csprojResolveAssemblyReference.cache
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.csproj.GenerateResource.Cache
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.exe
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.pdb
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\bin\Debug\Application1.exe.manifest
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\bin\Debug\Application1.application
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.exe.manifest
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.application

@@ -1,0 +1,7 @@
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\bin\Release\Application1.exe
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\bin\Release\Application1.pdb
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Release\Application1.Properties.Resources.resources
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Release\Form1.resources
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Release\Application1.csproj.GenerateResource.Cache
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Release\Application1.exe
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Release\Application1.pdb
