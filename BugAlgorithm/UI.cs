@@ -170,7 +170,15 @@ public partial class Form1 : System.Windows.Forms.Form
     }
     private int Y(int y)
     {
-        return  500-y;
+        return 500 - y;
+    }
+    private int invX(int x)
+    {
+        return x;
+    }
+    private int invY(int y)
+    {
+        return 500 - y;
     }
     
     private void drawObstacles(object sender, PaintEventArgs e)
@@ -208,6 +216,28 @@ public partial class Form1 : System.Windows.Forms.Form
 
     private void clickFrame_Click(object sender, EventArgs e)
     {
+        MouseEventArgs me = (MouseEventArgs) e;
+        Point pt=new Point(invX(me.X),invY(me.Y));
+
+        Console.WriteLine("Clicked at {0} {1}", me.X, me.Y);
+        switch (this.clickMode)
+        {
+            case (int)clickType.INITIAL: posF = startF = pos = pt;
+                                            Console.WriteLine("Start reset!");
+                                            if (timer1.Enabled)
+                                                pause_Click(sender, e);
+                                            pathLength = 0;
+                                            update_text();
+                break;
+            case (int)clickType.FINAL:      endF = end = pt;
+                                            Console.WriteLine("End reset!");
+                break;
+        }
+        if (timer1.Enabled)
+            pause_Click(sender, e);
+        pathLength = 0;
+        update_text();
+        this.Invalidate(true);
         // https://msdn.microsoft.com/en-us/library/system.windows.forms.control.mouseclick.aspx
     }
 
@@ -223,5 +253,12 @@ public partial class Form1 : System.Windows.Forms.Form
             timer1.Enabled = true;
             pauseBtn.Text = "Pause";
         }
+    }
+
+    private void update_text()
+    {
+        this.txtX.Text = "X: " + posF.X.ToString("0.00");
+        this.txtY.Text = "Y: " + posF.Y.ToString("0.00");
+        this.txtLen.Text = "Path Length: " + pathLength.ToString("0.00");
     }
 }

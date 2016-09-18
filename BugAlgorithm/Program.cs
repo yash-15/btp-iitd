@@ -12,7 +12,7 @@ public partial class Form1 : System.Windows.Forms.Form
     private List<Point[]> obstacles;
     Dictionary<Point[], Line[]> edges;
     private Point pos,end;
-    private PointF start, endF, posF, velF, checkpoint,target;
+    private PointF startF, endF, posF, velF, checkpoint,target;
     private double theta,pathLength=0;
     private int moveMode;
     private enum moveType { Free, Boundary};
@@ -30,14 +30,14 @@ public partial class Form1 : System.Windows.Forms.Form
         this.edges = new Dictionary<Point[],Line[]>();
         this.obstaclesUI = new List<Point[]>(); 
         readFromFile();
-        start = new Point(50, 50);
+        startF = new Point(50, 50);
         endF = new Point(450, 400);
-        posF = start;
+        posF = startF;
         pos.X = (int)posF.X;    pos.Y = (int)posF.Y;
         end.X = (int)endF.X;    end.Y = (int)endF.Y;
 
         moveMode = (int)moveType.Free;
-        checkpoint = start;
+        checkpoint = startF;
     }
     
     private void timer1_Tick(object sender, System.EventArgs e)
@@ -75,9 +75,7 @@ public partial class Form1 : System.Windows.Forms.Form
             this.txtLen.Font = new Font(txtLen.Font, FontStyle.Bold);
         }
 
-        this.txtX.Text = "X: "+posF.X.ToString("0.00");
-        this.txtY.Text = "Y: "+posF.Y.ToString("0.00");
-        this.txtLen.Text = "Path Length: " + pathLength.ToString("0.00");
+        this.update_text();
         this.clickFrame.Invalidate(true);
     }
 
@@ -192,10 +190,11 @@ public partial class Form1 : System.Windows.Forms.Form
         double dist = Math.Sqrt(a.X * a.X + a.Y * a.Y);
         if (dist > eps)
             return false;
-        if (a.X * velF.X + a.Y * velF.Y >= 0)
-            return true;
-        else
-            return false;
+
+        //Console.WriteLine("Reached Destination!");
+        //if (a.X * velF.X + a.Y * velF.Y >= -eps)
+        return true;
+        
     }
 
     private bool isAligned_withRadius(PointF a, PointF b, PointF c)
