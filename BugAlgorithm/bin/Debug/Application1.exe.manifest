@@ -49,17 +49,8 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>GMywFfsmkT4iWl50v78cd7hwD70=</dsig:DigestValue>
+        <dsig:DigestValue>UgrUpJNPJIBhO4NyvT0X3VR8qyU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="bin\Debug\Resources\obstacles.txt" size="125">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>CIe4H7Bo0R7apTBkW3RR76SlrD4=</dsig:DigestValue>
-    </hash>
-  </file>
 </asmv1:assembly>

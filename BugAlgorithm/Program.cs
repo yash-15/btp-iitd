@@ -28,7 +28,13 @@ public partial class Form1 : System.Windows.Forms.Form
     private void InitializeAlgorithm()
     {
         string[] dirs0 = System.IO.Directory.GetFiles(System.Environment.CurrentDirectory, "obs*.txt");
-        string[] dirs1 = System.IO.Directory.GetFiles(System.Environment.CurrentDirectory+"\\Resources", "obs*.txt");
+        string[] dirs1 = new string[0];
+        try
+        {
+            dirs1 = System.IO.Directory.GetFiles(System.Environment.CurrentDirectory + "\\Resources", "obs*.txt");
+        }
+        catch (Exception e)
+        { }
         dirs = new string[dirs0.Length+dirs1.Length];
         for (int i = 0; i < dirs0.Length; i++)
             dirs[i] = dirs0[i].Replace(System.Environment.CurrentDirectory + "\\", "");
@@ -57,7 +63,7 @@ public partial class Form1 : System.Windows.Forms.Form
     
     private void timer1_Tick(object sender, System.EventArgs e)
     {
-        Console.WriteLine("tim {0} {1}  {2} {3}", target.X, target.Y, breakoff.X, breakoff.Y);
+       // Console.WriteLine("tim {0} {1}  {2} {3}", target.X, target.Y, breakoff.X, breakoff.Y);
         theta = Math.Atan2(target.Y - posF.Y, target.X - posF.X);
         velF.X = speed * (float)Math.Cos(theta);
         velF.Y = speed * (float)Math.Sin(theta);
@@ -111,7 +117,7 @@ public partial class Form1 : System.Windows.Forms.Form
 
     private void bug2()
     {
-          Console.WriteLine(" Target {0} {1}, Break-off {0} {1}", target.X, target.Y, breakoff.X, breakoff.Y);
+     //     Console.WriteLine(" Target {0} {1}, Break-off {0} {1}", target.X, target.Y, breakoff.X, breakoff.Y);
         if (reached(posF, target))
         {
             pathLength += distance(posF, target);
