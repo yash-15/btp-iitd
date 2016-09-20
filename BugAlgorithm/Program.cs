@@ -9,11 +9,12 @@ using System.Data;
 public partial class Form1 : System.Windows.Forms.Form
 {
     private bool debug = false;
+    private int bugType;
     private List<Point[]> obstacles;
     Dictionary<Point[], Line[]> edges;
     private Point pos,end;
-    private PointF startF, endF, posF, velF, checkpoint,target;
-    private double theta,pathLength=0;
+    private PointF startF, endF, posF, velF, checkpoint,target,breakoff;
+    private double theta,pathLength=0,dist;
     private int moveMode;
     private enum moveType { Free, Boundary};
     private float speed;
@@ -21,27 +22,42 @@ public partial class Form1 : System.Windows.Forms.Form
     private Point[] contact;
     private int index;
     private const float eps = 1.5F,del = 0.001F;
-    int frameCount = 0;
+    //int frameCount = 0;
+    private Line l00;
+    string[] dirs;
     private void InitializeAlgorithm()
     {
+        string[] dirs0 = System.IO.Directory.GetFiles(System.Environment.CurrentDirectory, "obs*.txt");
+        string[] dirs1 = System.IO.Directory.GetFiles(System.Environment.CurrentDirectory+"\\Resources", "obs*.txt");
+        dirs = new string[dirs0.Length+dirs1.Length];
+        for (int i = 0; i < dirs0.Length; i++)
+            dirs[i] = dirs0[i].Replace(System.Environment.CurrentDirectory + "\\", "");
+        for (int i = 0; i < dirs1.Length; i++)
+            dirs[i+dirs0.Length] = dirs1[i].Replace(System.Environment.CurrentDirectory + "\\", "");
+        //if (dirs.Length == 0)
+        //{
+        //    throw new Exception("No input obstacle files found in application directory!");
+       // }
+        this.bugType = 0;
         this.bugRadius = 10;
         this.speed = 0.9F;
-        this.obstacles = new List<Point[]>();
-        this.edges = new Dictionary<Point[],Line[]>();
-        this.obstaclesUI = new List<Point[]>(); 
-        readFromFile();
+        if (dirs.Length >= 1)
+            readFromFile(dirs[0]);
+        else
+            readFromFile("");
         startF = new Point(50, 50);
         endF = new Point(450, 400);
         posF = startF;
         pos.X = (int)posF.X;    pos.Y = (int)posF.Y;
         end.X = (int)endF.X;    end.Y = (int)endF.Y;
-
+        l00 = new Line(startF, endF);
         moveMode = (int)moveType.Free;
         checkpoint = startF;
     }
     
     private void timer1_Tick(object sender, System.EventArgs e)
     {
+        Console.WriteLine("tim {0} {1}  {2} {3}", target.X, target.Y, breakoff.X, breakoff.Y);
         theta = Math.Atan2(target.Y - posF.Y, target.X - posF.X);
         velF.X = speed * (float)Math.Cos(theta);
         velF.Y = speed * (float)Math.Sin(theta);
@@ -56,13 +72,12 @@ public partial class Form1 : System.Windows.Forms.Form
         }
         else
         {
-            if (reached(posF, target))
-            {
-                pathLength += distance(posF, target);
-                posF = target;
-                this.clickFrame.Invalidate(true);
-                obstacleDetection();
-            }
+            if (bugType == 0)
+                bug0();
+            else if (bugType == 1)
+                bug1();
+            else if (bugType == 2)
+                bug2();
         }
 
         if (reached(posF, endF))
@@ -73,11 +88,54 @@ public partial class Form1 : System.Windows.Forms.Form
             pos.Y = (int)posF.Y;
             timer1.Stop();
             this.txtLen.Font = new Font(txtLen.Font, FontStyle.Bold);
+            this.pauseBtn.Text = "Done";
         }
 
         this.update_text();
         this.clickFrame.Invalidate(true);
     }
+
+    private void bug0() 
+    {
+        if (reached(posF, target))
+        {
+            pathLength += distance(posF, target);
+            posF = target;
+            this.clickFrame.Invalidate(true);
+            obstacleDetection();
+        }
+    }
+
+    private void bug1()
+    { }
+
+    private void bug2()
+    {
+          Console.WriteLine(" Target {0} {1}, Break-off {0} {1}", target.X, target.Y, breakoff.X, breakoff.Y);
+        if (reached(posF, target))
+        {
+            pathLength += distance(posF, target);
+            posF = target;
+            this.clickFrame.Invalidate(true);
+            index = (index + 1) %(contact.Length-1);
+            target = contact[index];
+            Console.WriteLine("{0}x+{1}y+{2}=0 ; {3}x+{4}y+{5}=0", l00.a, l00.b, l00.c, 
+                edges[contact][index].a,edges[contact][index].b, edges[contact][index].c);
+            breakoff = intersect(l00, edges[contact][index]);
+            Console.WriteLine("Point: {0} {1}", breakoff.X, breakoff.Y);
+        }
+        else if (reached(posF, breakoff))
+        {
+            if (distance(posF, endF) < dist)
+            {
+                pathLength += distance(posF, breakoff);
+                posF = breakoff;
+                this.clickFrame.Invalidate(true);
+                obstacleDetection();
+            }
+        }
+    }
+
 
     struct Line 
     {
@@ -168,15 +226,18 @@ public partial class Form1 : System.Windows.Forms.Form
                 if (distance(xPt,posF)<eps)
                     if (!PointinPoly(obs, extendedPoint(xPt, end, -2*eps)))
                         continue;
-                if(debug)
-                    Console.WriteLine("Intersection found!");
                 contact = obs;
-                index = i+1;
+                index = i;
+                if (debug)
+                    Console.WriteLine("Intersection found! {0} {1}",index,contact.Length);
                 moveMode = (int)moveType.Boundary;
                 checkpoint = posF;
                 pathLength += distance(posF, xPt);
                 posF = xPt;
                 target = obs[i+1];
+                breakoff = endF;
+                dist = distance(posF, endF);
+                Console.WriteLine("obs det {0} {1}  {2} {3}", target.X, target.Y, breakoff.X, breakoff.Y);
                 return;
             }
         }
@@ -301,44 +362,54 @@ public partial class Form1 : System.Windows.Forms.Form
         return false;
     }
 
-    private void readFromFile()
+    private void readFromFile(string path)
     {
-        System.IO.StreamReader scan = new System.IO.StreamReader("Resources/obstacles.txt");
-        string line = scan.ReadLine();
-        string[] str;
-        Point[] poly,polyUI;
-        Line[] edg;
-        int obstacleCount = Convert.ToInt32(line), pts;
-        Console.WriteLine("Obstacles count: {0}", obstacleCount);
-        for (int i = 0; i < obstacleCount; i++)
+        this.obstacles = new List<Point[]>();
+        this.edges = new Dictionary<Point[], Line[]>();
+        this.obstaclesUI = new List<Point[]>();
+        try
         {
-            line = scan.ReadLine();
-            pts = Convert.ToInt32(line);
-            poly = new Point[pts + 1];
-            polyUI = new Point[pts + 1];
-            edg = new Line[pts];
-            for (int j = 0; j < pts; j++)
+            System.IO.StreamReader scan = new System.IO.StreamReader(path);
+            string line = scan.ReadLine();
+            string[] str;
+            Point[] poly, polyUI;
+            Line[] edg;
+            int obstacleCount = Convert.ToInt32(line), pts;
+            Console.WriteLine("Obstacles count: {0}", obstacleCount);
+            for (int i = 0; i < obstacleCount; i++)
             {
-                str = scan.ReadLine().Split();
-                poly[j] = (new Point(Convert.ToInt32(str[0]), Convert.ToInt32(str[1])));
-            }
-            poly[pts] = poly[0];
-            obstacles.Add(poly);
+                line = scan.ReadLine();
+                pts = Convert.ToInt32(line);
+                poly = new Point[pts + 1];
+                polyUI = new Point[pts + 1];
+                edg = new Line[pts];
+                for (int j = 0; j < pts; j++)
+                {
+                    str = scan.ReadLine().Split();
+                    poly[j] = (new Point(Convert.ToInt32(str[0]), Convert.ToInt32(str[1])));
+                }
+                poly[pts] = poly[0];
+                obstacles.Add(poly);
 
-            for (int j = 0; j <= pts; j++)
-            {
-                polyUI[j].X = X(poly[j].X);
-                polyUI[j].Y = Y(poly[j].Y);
-            }
-            obstaclesUI.Add(polyUI);
+                for (int j = 0; j <= pts; j++)
+                {
+                    polyUI[j].X = X(poly[j].X);
+                    polyUI[j].Y = Y(poly[j].Y);
+                }
+                obstaclesUI.Add(polyUI);
 
-            for (int j = 0; j < pts; j++)
-            {
-                edg[j] = new Line(poly[j], poly[j + 1]);
+                for (int j = 0; j < pts; j++)
+                {
+                    edg[j] = new Line(poly[j], poly[j + 1]);
+                }
+                edges.Add(poly, edg);
             }
-            edges.Add(poly,edg);
+            scan.Close();
         }
-        scan.Close();
+        catch (Exception e) 
+        {
+            Console.WriteLine("No files found!");
+        }
     }
 
     //private void newObj_Click(object sender, EventArgs e)

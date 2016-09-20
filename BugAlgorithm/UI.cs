@@ -16,7 +16,7 @@ public partial class Form1 : System.Windows.Forms.Form
     private System.Windows.Forms.Label txtY;
     private System.Windows.Forms.Label txtLen;
     private System.Windows.Forms.Label txtTitle;
-    private System.Windows.Forms.Button newObjBtn;
+    private System.Windows.Forms.ComboBox objSel;
     private System.Windows.Forms.Button StartPosBtn;
     private System.Windows.Forms.Button EndPosBtn;
     private System.Windows.Forms.Button pauseBtn;
@@ -47,7 +47,7 @@ public partial class Form1 : System.Windows.Forms.Form
             this.txtY = new System.Windows.Forms.Label();
             this.txtLen = new System.Windows.Forms.Label();
             this.txtTitle = new System.Windows.Forms.Label();
-            this.newObjBtn = new System.Windows.Forms.Button();
+            this.objSel = new System.Windows.Forms.ComboBox();
             this.StartPosBtn = new System.Windows.Forms.Button();
             this.EndPosBtn = new System.Windows.Forms.Button();
             this.pauseBtn = new System.Windows.Forms.Button();
@@ -69,6 +69,14 @@ public partial class Form1 : System.Windows.Forms.Form
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             this.timer1.Interval = 5;
+            //
+            // txtTitle
+            // 
+            this.txtTitle.Location = new System.Drawing.Point(325, 10);
+            this.txtTitle.Name = "txtTitle";
+            this.txtTitle.Size = new System.Drawing.Size(300, 60);
+            this.txtTitle.Font = new Font(this.txtLen.Font.Name, 15);
+            this.txtTitle.Text = "Bug Algorithm Simulation";
             // 
             // txtX
             // 
@@ -93,22 +101,21 @@ public partial class Form1 : System.Windows.Forms.Form
             this.txtLen.Size = new System.Drawing.Size(275, 30);
             this.txtLen.Font = new Font(this.txtLen.Font.Name, 11);
             this.txtLen.Text = "Path Length: " + pathLength.ToString("0.00");//
-            // txtTitle
-            // 
-            this.txtTitle.Location = new System.Drawing.Point(325, 10);
-            this.txtTitle.Name = "txtTitle";
-            this.txtTitle.Size = new System.Drawing.Size(300, 60);
-            this.txtTitle.Font = new Font(this.txtLen.Font.Name, 15);
-            this.txtTitle.Text = "Bug Algorithm Simulation";
-            // 
-            // newObjBtn
-            // 
-            this.newObjBtn.Location = new System.Drawing.Point(25, 250);
-            this.newObjBtn.Name = "newObjBtn";
-            this.newObjBtn.Size = new System.Drawing.Size(100, 23);
-            this.newObjBtn.TabIndex = 3;
-            this.newObjBtn.Text = "Add obstacle";
-            this.newObjBtn.Click += new System.EventHandler(this.newObj_Click);
+            //
+            // objSel
+            //
+            this.objSel.Location = new System.Drawing.Point(25, 250);
+            this.objSel.Name = "objSel";
+            this.objSel.Size = new System.Drawing.Size(100, 23);
+            this.objSel.DropDownStyle = ComboBoxStyle.DropDown;
+            this.objSel.TabIndex = 3;
+            this.objSel.MaxDropDownItems = 5;
+            foreach (string dir in dirs)
+                this.objSel.Items.Add(dir);
+            this.objSel.SelectedIndexChanged += objSel_SelectedIndexChanged;
+            if(this.objSel.Items.Count>0)
+                this.objSel.SelectedIndex = 1;
+            
             // 
             // startPosBtn
             // 
@@ -148,7 +155,7 @@ public partial class Form1 : System.Windows.Forms.Form
             this.Controls.Add(this.txtY);
             this.Controls.Add(this.txtLen);
             this.Controls.Add(this.txtTitle);
-            this.Controls.Add(this.newObjBtn);
+            this.Controls.Add(this.objSel);
             this.Controls.Add(this.StartPosBtn);
             this.Controls.Add(this.EndPosBtn);
             this.Controls.Add(this.pauseBtn);
@@ -159,6 +166,15 @@ public partial class Form1 : System.Windows.Forms.Form
             this.PerformLayout();
 
     }
+
+    void objSel_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        readFromFile(objSel.Text);
+        l00 = new Line(startF, endF);
+        pauseBtn.Text = "Start";
+        this.clickFrame.Invalidate(true);
+    }
+
     public static void Main()
     {
         Application.Run(new Form1());
@@ -193,13 +209,6 @@ public partial class Form1 : System.Windows.Forms.Form
         e.Graphics.DrawLine(Pens.Blue, new Point(X(0), Y(500)), new Point(X(0), Y(0)));
     }
 
-    private void newObj_Click(object sender, EventArgs e)
-    {
-        if (this.clickMode == (int)clickType.OBS)
-            this.clickMode = (int)clickType.NONE;
-        this.clickMode = (int)clickType.OBS;
-    }
-    
     private void startPos_Click(object sender, EventArgs e)
     {
         if(this.clickMode == (int)clickType.INITIAL)
@@ -223,15 +232,17 @@ public partial class Form1 : System.Windows.Forms.Form
         switch (this.clickMode)
         {
             case (int)clickType.INITIAL: posF = startF = pos = pt;
-                                            Console.WriteLine("Start reset!");
-                                            if (timer1.Enabled)
-                                                pause_Click(sender, e);
-                                            pathLength = 0;
-                                            update_text();
-                break;
-            case (int)clickType.FINAL:      endF = end = pt;
-                                            Console.WriteLine("End reset!");
-                break;
+                                        Console.WriteLine("Start reset!");
+                                        if (timer1.Enabled)
+                                            pause_Click(sender, e);
+                                        pathLength = 0;
+                                        l00 = new Line(startF, endF);
+                                        update_text();
+                                        break;
+            case (int)clickType.FINAL:  endF = end = pt;
+                                        l00 = new Line(startF, endF);
+                                        Console.WriteLine("End reset!");
+                                        break;
         }
         if (timer1.Enabled)
             pause_Click(sender, e);

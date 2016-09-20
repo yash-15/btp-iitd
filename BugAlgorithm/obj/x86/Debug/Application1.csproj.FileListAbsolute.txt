@@ -17,3 +17,4 @@ Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\bin\Debug\Application1.exe.m
 Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\bin\Debug\Application1.application
 Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.exe.manifest
 Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.application
+Y:\VII Semester\MCD411\GitHub\btp-iitd\BugAlgorithm\obj\x86\Debug\Application1.csprojResolveAssemblyReference.cache

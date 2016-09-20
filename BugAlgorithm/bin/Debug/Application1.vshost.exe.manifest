@@ -42,15 +42,24 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Application1.exe" size="19968">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Application1.exe" size="22016">
       <assemblyIdentity name="Application1" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>3V0guYQnJXhhPlE6gA+wS2VaSNQ=</dsig:DigestValue>
+        <dsig:DigestValue>GMywFfsmkT4iWl50v78cd7hwD70=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
+  <file name="bin\Debug\Resources\obstacles.txt" size="125">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>CIe4H7Bo0R7apTBkW3RR76SlrD4=</dsig:DigestValue>
+    </hash>
+  </file>
 </asmv1:assembly>
